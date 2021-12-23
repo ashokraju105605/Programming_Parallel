@@ -1,0 +1,15 @@
+C:\Programming_Parallel\bin\Debug\net6.0\Programming_Parallel.exe
+C:\Programming_Parallel\bin\Debug\net6.0\Programming_Parallel.deps.json
+C:\Programming_Parallel\bin\Debug\net6.0\Programming_Parallel.runtimeconfig.json
+C:\Programming_Parallel\bin\Debug\net6.0\Programming_Parallel.dll
+C:\Programming_Parallel\bin\Debug\net6.0\ref\Programming_Parallel.dll
+C:\Programming_Parallel\bin\Debug\net6.0\Programming_Parallel.pdb
+C:\Programming_Parallel\obj\Debug\net6.0\Programming_Parallel.csproj.AssemblyReference.cache
+C:\Programming_Parallel\obj\Debug\net6.0\Programming_Parallel.GeneratedMSBuildEditorConfig.editorconfig
+C:\Programming_Parallel\obj\Debug\net6.0\Programming_Parallel.AssemblyInfoInputs.cache
+C:\Programming_Parallel\obj\Debug\net6.0\Programming_Parallel.AssemblyInfo.cs
+C:\Programming_Parallel\obj\Debug\net6.0\Programming_Parallel.csproj.CoreCompileInputs.cache
+C:\Programming_Parallel\obj\Debug\net6.0\Programming_Parallel.dll
+C:\Programming_Parallel\obj\Debug\net6.0\ref\Programming_Parallel.dll
+C:\Programming_Parallel\obj\Debug\net6.0\Programming_Parallel.pdb
+C:\Programming_Parallel\obj\Debug\net6.0\Programming_Parallel.genruntimeconfig.cache
