@@ -86,6 +86,24 @@ namespace HelloWorld
 
             Console.WriteLine("result returned by task: ");
 
+            var threadA = new Thread(new ThreadStart(ExecuteA)); // threadstart delegate without parameter
+            threadA.Start();
+
+            var threadB = new Thread(new ParameterizedThreadStart(ExecuteB)); // threadstart delegate wtih parameter.
+            threadB.Start("abc");
+
+            /*
+            Finally, you can call the Thread constructors without specifying the ThreadStart or ParameterizedThreadStart delegate. 
+            In this case, 
+            the compiler will match your method to the constructor overload based on its signature, performing the cast implicitly. 
+
+            var threadA = new Thread(ExecuteA);   // implicit cast to ThreadStart
+            threadA.Start();
+
+            var threadB = new Thread(ExecuteB);   // implicit cast to ParameterizedThreadStart
+            threadB.Start("abc");
+            */
+
             Thread thread1 = new Thread(Method1);
             thread1.Start();
 
@@ -125,6 +143,15 @@ namespace HelloWorld
                       //and this background thread will keep running
 
 
+        }
+        private static void ExecuteA()
+        {
+            Console.WriteLine("Executing parameterless thread!");
+        }
+
+        private static void ExecuteB(Object obj)
+        {
+            Console.WriteLine($"Executing thread with parameter \"{obj}\"!");
         }
         static double CalculateSum(int num)
         {
