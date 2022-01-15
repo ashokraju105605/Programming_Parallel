@@ -1,11 +1,12 @@
 using System;
 //using System.DateTime;
+using System.Timers;
 public class RateLimiting
 {
     public static void Main(String[] args)
     {
         Console.WriteLine("Jai Shree Ram");
-        RateLimiter rl = new RateLimiter(2, 1);
+        RateLimiter rl = new RateLimiter(2, 1, true);
         int packet = 0;
         while (true)
         {
@@ -21,7 +22,9 @@ public class RateLimiting
         public int timelimit;
         public int rate;
         public TimeOnly lastTimeStamp;
-        public RateLimiter(int reql, int tl)
+        public bool refillbythread;
+        public bool timerset;
+        public RateLimiter(int reql, int tl, bool refillwiththread)
         {
             capacity = reql;
             availableTokens = reql;
@@ -29,6 +32,7 @@ public class RateLimiting
             timelimit = tl;
             rate = reqlimit / timelimit;
             lastTimeStamp = TimeOnly.FromDateTime(DateTime.Now);
+            refillbythread = refillwiththread;
         }
         public bool allowToProceed(int packet)
         {
@@ -36,8 +40,11 @@ public class RateLimiting
             int tokenscount = getAvailableTokens();
             if (tokenscount > 0)
             {
-                tokenscount--;
-                availableTokens--;
+                lock (this)
+                {
+                    tokenscount--;
+                    availableTokens--;
+                }
                 Console.WriteLine(" Token Providing Success " + packet);
                 return true;
             }
@@ -52,17 +59,41 @@ public class RateLimiting
         {
             return availableTokens;
         }
-        public void refill()
+        public async void refill()
         {
-            TimeOnly curtime = TimeOnly.FromDateTime(DateTime.Now);
-            if (curtime > lastTimeStamp)
+            if (refillbythread)
             {
-                TimeSpan elapsedTime = curtime - lastTimeStamp;
-                int tokenstobeadded = (int)elapsedTime.TotalSeconds * rate;
-                if (tokenstobeadded > 0)
+                if (!timerset)
                 {
-                    availableTokens = Math.Min(capacity, availableTokens + tokenstobeadded);
-                    lastTimeStamp = curtime;
+                    timerset = true;
+                    var tmr = new PeriodicTimer(TimeSpan.FromMilliseconds(500));
+
+                    while (await tmr.WaitForNextTickAsync())
+                    {
+                        lock (this)
+                        {
+                            Console.WriteLine("running Periodically every 500 seconds");
+                            availableTokens = Math.Min(availableTokens + 1, capacity);
+                        }
+                    }
+                }
+                return;
+            }
+            else
+            {
+                TimeOnly curtime = TimeOnly.FromDateTime(DateTime.Now);
+                if (curtime > lastTimeStamp)
+                {
+                    TimeSpan elapsedTime = curtime - lastTimeStamp;
+                    int tokenstobeadded = (int)elapsedTime.TotalSeconds * rate;
+                    if (tokenstobeadded > 0)
+                    {
+                        lock (this)
+                        {
+                            availableTokens = Math.Min(capacity, availableTokens + tokenstobeadded);
+                        }
+                        lastTimeStamp = curtime;
+                    }
                 }
             }
         }
@@ -81,7 +112,10 @@ public class RateLimiting
         }
         public void refillbyThread()
         {
-            availableTokens = Math.Min(availableTokens + 1, capacity);
+            lock (this)
+            {
+                availableTokens = Math.Min(availableTokens + 1, capacity);
+            }
         }
     }
 }
